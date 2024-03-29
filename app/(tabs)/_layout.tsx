@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
 
@@ -8,14 +7,14 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Duraklar",
+          title: "İstasyon Bilgileri",
         }}
       />
 
       <Tabs.Screen
         name="map"
         options={{
-          title: "Map Görünümü",
+          title: "Duraklar",
         }}
       />
     </Tabs>
