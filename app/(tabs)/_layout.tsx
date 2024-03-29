@@ -1,9 +1,14 @@
 import React from "react";
 import { Tabs } from "expo-router";
+import { Dimensions, Platform } from "react-native";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarHideOnKeyboard: !Platform.OS,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
