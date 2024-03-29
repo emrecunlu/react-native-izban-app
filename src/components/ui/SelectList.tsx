@@ -6,12 +6,12 @@ import {
   View,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useCallback, useMemo, useRef, useState } from "react";
-import BottomSheet, {
+import { useCallback, useMemo, useRef } from "react";
+import {
   BottomSheetBackdrop,
   BottomSheetFlatList,
+  BottomSheetModal,
   BottomSheetTextInput,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { cn } from "@/utils/helpers";
 
@@ -31,9 +31,7 @@ export default function SelectList<T>({
   onChange,
   ...props
 }: Props<T>) {
-  const [bottomSheetVisible, setBottomSheetVisible] = useState<boolean>(false);
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["50%", "75%"], []);
 
   const renderBackdrop = useCallback(
@@ -56,59 +54,51 @@ export default function SelectList<T>({
   return (
     <>
       <TouchableOpacity
-        className="w-full flex-row items-center justify-between border rounded-xl h-12 px-4 border-zinc-200 bg-white -z-10"
+        className="w-full flex-row items-center justify-between border rounded-xl h-12 px-4 border-zinc-200 bg-white"
         {...props}
-        onPress={() => setBottomSheetVisible(true)}
+        onPress={() => bottomSheetRef.current?.present()}
       >
         <Text className="text-zinc-600">
           {value ? itemTitle(value) : label}
         </Text>
         <MaterialIcons name="arrow-downward" size={18} />
       </TouchableOpacity>
-      {bottomSheetVisible && (
-        <BottomSheet
-          ref={bottomSheetRef}
-          snapPoints={snapPoints}
-          enablePanDownToClose
-          index={0}
-          onClose={() => setBottomSheetVisible(false)}
-          backdropComponent={renderBackdrop}
-        >
-          <View className="flex-1">
-            <BottomSheetTextInput
-              style={styles.searchInput}
-              placeholder="Arama"
-              onSubmitEditing={() => bottomSheetRef.current?.snapToIndex(0)}
-            />
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        enablePanDownToClose
+        backdropComponent={renderBackdrop}
+      >
+        <View className="flex-1">
+          <BottomSheetTextInput
+            style={styles.searchInput}
+            placeholder="Arama"
+            onSubmitEditing={() => bottomSheetRef.current?.snapToIndex(0)}
+          />
 
-            <BottomSheetFlatList
-              style={{ marginTop: 16 }}
-              data={items}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => handleSelectItem(item)}
-                  className={cn(
-                    "flex-row space-x-4 items-center py-3 px-4 border-b border-b-zinc-200",
-                    {
-                      "border-b-0": index === items.length - 1,
-                    }
-                  )}
-                >
-                  <MaterialIcons
-                    name="location-pin"
-                    size={18}
-                    color="#cccccc"
-                  />
-                  <Text className="text-base font-medium text-zinc-600">
-                    {itemTitle(item)}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </BottomSheet>
-      )}
+          <BottomSheetFlatList
+            style={{ marginTop: 16 }}
+            data={items}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => handleSelectItem(item)}
+                className={cn(
+                  "flex-row space-x-4 items-center py-3 px-4 border-b border-b-zinc-200",
+                  {
+                    "border-b-0": index === items.length - 1,
+                  }
+                )}
+              >
+                <MaterialIcons name="location-pin" size={18} color="#cccccc" />
+                <Text className="text-base font-medium text-zinc-600">
+                  {itemTitle(item)}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </BottomSheetModal>
     </>
   );
 }

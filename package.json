@@ -12,6 +12,7 @@
     "@expo/vector-icons": "^14.0.0",
     "@gorhom/bottom-sheet": "^4.6.1",
     "@reduxjs/toolkit": "^2.2.2",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "expo": "~50.0.14",
     "expo-constants": "~15.4.5",
