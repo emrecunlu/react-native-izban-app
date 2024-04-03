@@ -1,24 +1,22 @@
-import { store } from "@/store";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Provider } from "react-redux";
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
 
-export default function AppLayout() {
+export default function MainLayout() {
   return (
-    <GestureHandlerRootView className="flex-1">
-      <BottomSheetModalProvider>
-        <Provider store={store}>
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Stack>
-        </Provider>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+    <View className="flex-1">
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: "rgb(0,0,0)",
+          },
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+
+      <StatusBar style="inverted" />
+    </View>
   );
 }
