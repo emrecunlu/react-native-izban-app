@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import colors from "tailwindcss/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabsLayout() {
   return (
@@ -14,16 +15,13 @@ export default function TabsLayout() {
         headerTitleAlign: "center",
         tabBarActiveTintColor: colors.green[500],
         tabBarStyle: {
-          borderTopColor: colors.green[400],
+          borderTopColor: colors.green[500],
         },
         headerTitleStyle: {
           color: colors.white,
           fontSize: 18,
           fontWeight: "600",
         },
-      }}
-      sceneContainerStyle={{
-        backgroundColor: "#FFFFFF",
       }}
     >
       <Tabs.Screen
