@@ -1,17 +1,24 @@
-import axios from "@/utils/libs/axios";
-import type { Station } from "@/utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { Departure, Station } from "@/utils/types";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const getCurrentStations = () => {
-  return axios.get<Station[]>("/istasyonlar");
-};
+export const izbanService = createApi({
+  reducerPath: "izbanService",
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.EXPO_PUBLIC_API_URL ?? "",
+  }),
+  endpoints: (builder) => ({
+    getStations: builder.query<Station[], void>({
+      query: () => "/istasyonlar",
+    }),
+    getDepartureTimes: builder.query<
+      Departure[],
+      { departureId: number; arrivalId: number }
+    >({
+      query: ({ arrivalId, departureId }) =>
+        `/sefersaatleri/${departureId}/${arrivalId}`,
+    }),
+  }),
+});
 
-export const useGetCurrentStations = () => {
-  return useQuery({
-    queryKey: ["stations"],
-    initialData: [],
-    queryFn: async () => {
-      return (await getCurrentStations()).data;
-    },
-  });
-};
+export const { useGetStationsQuery, useLazyGetDepartureTimesQuery } =
+  izbanService;

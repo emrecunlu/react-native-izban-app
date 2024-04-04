@@ -1,6 +1,12 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { useGetCurrentStations } from "@/services/izbanService";
+import {
+  getCurrentStations,
+  useGetCurrentStations,
+  useGetDepartureTimes,
+  useGetStationsQuery,
+  useLazyGetDepartureTimesQuery,
+} from "@/services/izbanService";
 import { StatusBar } from "expo-status-bar";
 import SelectStationList from "@/components/SelectStationList";
 import { Station } from "@/utils/types";
@@ -10,11 +16,22 @@ export default function HomeView() {
     departure: null,
     arrival: null,
   });
-  const { data: stations } = useGetCurrentStations();
+
+  const { data: stations = [] } = useGetStationsQuery();
+  const [trigger, { data }] = useLazyGetDepartureTimesQuery();
+
+  const handleSubmit = () => {
+    if (selecteds.departure?.IstasyonId && selecteds.arrival?.IstasyonId) {
+      trigger({
+        arrivalId: selecteds.arrival.IstasyonId,
+        departureId: selecteds.departure.IstasyonId,
+      });
+    }
+  };
 
   return (
     <ScrollView className="flex-1 p-4" bounces={false}>
-      <View className="flex-col space-y-4">
+      <View className="flex-col space-y-6">
         <View className="flex-col space-y-2">
           <SelectStationList
             label="Kalkış İstasyonu"
@@ -41,8 +58,8 @@ export default function HomeView() {
         </View>
 
         <TouchableOpacity
-          className="bg-green-500 rounded-full py-2"
-          disabled={!selecteds.departure || !selecteds.arrival}
+          className="bg-green-500 rounded-full py-2.5"
+          onPress={handleSubmit}
         >
           <Text className="text-white font-semibold text-center text-[15px]">
             Görüntüle

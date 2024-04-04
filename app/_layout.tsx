@@ -1,15 +1,15 @@
+import { store } from "@/store";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from "react-redux";
 
 export default function MainLayout() {
-  const queryClient = new QueryClient();
-
   return (
     <GestureHandlerRootView className="flex-1">
-      <BottomSheetModalProvider>
-        <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <BottomSheetModalProvider>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -20,8 +20,8 @@ export default function MainLayout() {
           >
             <Stack.Screen name="(tabs)" />
           </Stack>
-        </QueryClientProvider>
-      </BottomSheetModalProvider>
+        </BottomSheetModalProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }
