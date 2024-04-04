@@ -1,9 +1,8 @@
-import { store } from "@/store";
+import { store, type RootState } from "@/store";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
 export default function MainLayout() {
   return (

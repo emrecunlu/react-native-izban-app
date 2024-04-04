@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import colors from "tailwindcss/colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
+import { TouchableOpacity } from "react-native";
 
 export default function TabsLayout() {
   return (
