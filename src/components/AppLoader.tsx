@@ -1,5 +1,4 @@
 import { View, Modal, ActivityIndicator } from "react-native";
-import LottieView from "lottie-react-native";
 import colors from "tailwindcss/colors";
 
 type Props = {

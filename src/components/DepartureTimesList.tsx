@@ -1,7 +1,6 @@
 import type { Departure } from "@/utils/types";
-import { View, Text, Dimensions } from "react-native";
-import { format, isWithinInterval, parse } from "date-fns";
-import { useMemo } from "react";
+import { View, Text, Dimensions, ScrollView } from "react-native";
+import { isWithinInterval, parse } from "date-fns";
 import classNames from "classnames";
 
 type Props = {
@@ -9,17 +8,20 @@ type Props = {
 };
 
 export default function DepartureTimesList({ data }: Props) {
-  const activeIndex = useMemo(() => {
-    return data.findIndex((x) =>
-      isWithinInterval(new Date(), {
-        start: parse(x.HareketSaati, "HH:mm:ss", new Date()),
-        end: parse(x.VarisSaati, "HH:mm:ss", new Date()),
-      })
-    );
-  }, []);
+  const activeIndex = data.findIndex((x) =>
+    isWithinInterval(new Date(), {
+      start: parse(x.HareketSaati, "HH:mm:ss", new Date()),
+      end: parse(x.VarisSaati, "HH:mm:ss", new Date()),
+    })
+  );
 
   return (
-    <View className="mt-8">
+    <ScrollView
+      className="mt-6"
+      stickyHeaderIndices={[0]}
+      bounces={false}
+      showsVerticalScrollIndicator={false}
+    >
       <View className="flex-row space-x-2">
         <View className="bg-white rounded-md border border-zinc-200 py-2.5 px-4 flex-1">
           <Text className="text-center font-semibold text-green-600">
@@ -77,6 +79,6 @@ export default function DepartureTimesList({ data }: Props) {
           </View>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }

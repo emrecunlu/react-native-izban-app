@@ -14,9 +14,8 @@ export const izbanService = createApi({
       Departure[],
       { departureId: number; arrivalId: number }
     >({
-      query: ({ arrivalId, departureId }) => ({
-        url: `/sefersaatleri/${departureId}/${arrivalId}`,
-      }),
+      query: ({ arrivalId, departureId }) =>
+        `/sefersaatleri/${departureId}/${arrivalId}`,
     }),
   }),
 });

@@ -1,13 +1,14 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import {
   useGetStationsQuery,
   useLazyGetDepartureTimesQuery,
 } from "@/services/izbanService";
-import { StatusBar } from "expo-status-bar";
 import SelectStationList from "@/components/SelectStationList";
 import { Station } from "@/utils/types";
 import DepartureTimesList from "@/components/DepartureTimesList";
+import { store } from "@/store";
+import { setStationRoutes } from "@/store/features/stationRoutes";
 
 export default function HomeView() {
   const [selecteds, setSelecteds] = useState<Record<string, Station | null>>({
@@ -17,11 +18,29 @@ export default function HomeView() {
 
   const { data: stations = [], isLoading: initialLoading } =
     useGetStationsQuery();
-  const [trigger, { data: departureTimes, isLoading: mutationLoader }] =
+  const [trigger, { data: departureTimes, isFetching: mutationLoader }] =
     useLazyGetDepartureTimesQuery();
 
   const handleSubmit = () => {
     if (selecteds.departure?.IstasyonId && selecteds.arrival?.IstasyonId) {
+      const startedIndex = stations.findIndex(
+        (x) => x.IstasyonId === selecteds.departure?.IstasyonId
+      );
+      const endIndex = stations.findIndex(
+        (x) => x.IstasyonId === selecteds.arrival?.IstasyonId
+      );
+
+      const stationRoutes = stations.slice(
+        startedIndex > endIndex ? endIndex : startedIndex,
+        endIndex < startedIndex ? startedIndex + 1 : endIndex + 1
+      );
+
+      store.dispatch(
+        setStationRoutes(
+          startedIndex > endIndex ? stationRoutes.reverse() : stationRoutes
+        )
+      );
+
       trigger({
         arrivalId: selecteds.arrival.IstasyonId,
         departureId: selecteds.departure.IstasyonId,
@@ -30,7 +49,7 @@ export default function HomeView() {
   };
 
   return (
-    <ScrollView className="flex-1 p-4" bounces={false} nestedScrollEnabled>
+    <View className="flex-1 p-4">
       <View className="flex-col space-y-6">
         <View className="flex-col space-y-2">
           <SelectStationList
@@ -68,8 +87,6 @@ export default function HomeView() {
       </View>
 
       {departureTimes && <DepartureTimesList data={departureTimes} />}
-
-      <StatusBar style="light" />
-    </ScrollView>
+    </View>
   );
 }
