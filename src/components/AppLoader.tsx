@@ -8,7 +8,7 @@ type Props = {
 
 export default function AppLoader({ active }: Props) {
   return (
-    <Modal animationType="fade" transparent visible={active}>
+    <Modal animationType="none" transparent visible={active}>
       <View className="flex-1 items-center justify-center bg-black/75">
         <ActivityIndicator color={colors.white} />
       </View>

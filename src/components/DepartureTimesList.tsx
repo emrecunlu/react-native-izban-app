@@ -1,13 +1,25 @@
 import type { Departure } from "@/utils/types";
-import { View, Text, ScrollView, Dimensions } from "react-native";
+import { View, Text, Dimensions } from "react-native";
+import { format, isWithinInterval, parse } from "date-fns";
+import { useMemo } from "react";
+import classNames from "classnames";
 
 type Props = {
   data: Departure[];
 };
 
 export default function DepartureTimesList({ data }: Props) {
+  const activeIndex = useMemo(() => {
+    return data.findIndex((x) =>
+      isWithinInterval(new Date(), {
+        start: parse(x.HareketSaati, "HH:mm:ss", new Date()),
+        end: parse(x.VarisSaati, "HH:mm:ss", new Date()),
+      })
+    );
+  }, []);
+
   return (
-    <View>
+    <View className="mt-8">
       <View className="flex-row space-x-2">
         <View className="bg-white rounded-md border border-zinc-200 py-2.5 px-4 flex-1">
           <Text className="text-center font-semibold text-green-600">
@@ -25,23 +37,40 @@ export default function DepartureTimesList({ data }: Props) {
         {data.map((item, index) => (
           <View className="flex-row gap-x-2" key={index}>
             <View
-              className="bg-white rounded-md border border-zinc-200 py-2.5 px-4"
+              className={classNames(
+                "rounded-md bg-white border border-zinc-200 py-2.5 px-4",
+                {
+                  "bg-green-500": activeIndex === index,
+                }
+              )}
               style={{
                 width: (Dimensions.get("screen").width - 32) / 2,
               }}
             >
-              <Text className="text-center">
+              <Text
+                className={classNames("text-center", {
+                  "text-white font-semibold": activeIndex === index,
+                })}
+              >
                 {item.HareketSaati.split(":").slice(0, 2).join(":")}
               </Text>
             </View>
             <View
-              className="bg-white rounded-md border border-zinc-200 py-2.5 px-4"
+              className={classNames(
+                "rounded-md bg-white border border-zinc-200 py-2.5 px-4",
+                {
+                  "bg-green-500": activeIndex === index,
+                }
+              )}
               style={{
-                width: (Dimensions.get("screen").width - 32) / 2 - 8,
+                width: (Dimensions.get("screen").width - 32) / 2,
               }}
             >
-              <Text className="text-center">
-                {" "}
+              <Text
+                className={classNames("text-center", {
+                  "text-white font-semibold": activeIndex === index,
+                })}
+              >
                 {item.VarisSaati.split(":").slice(0, 2).join(":")}
               </Text>
             </View>

@@ -8,9 +8,6 @@ import { StatusBar } from "expo-status-bar";
 import SelectStationList from "@/components/SelectStationList";
 import { Station } from "@/utils/types";
 import DepartureTimesList from "@/components/DepartureTimesList";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import AppLoader from "@/components/AppLoader";
 
 export default function HomeView() {
   const [selecteds, setSelecteds] = useState<Record<string, Station | null>>({
@@ -20,7 +17,7 @@ export default function HomeView() {
 
   const { data: stations = [], isLoading: initialLoading } =
     useGetStationsQuery();
-  const [trigger, { data: departureTimes, isFetching: mutationLoader }] =
+  const [trigger, { data: departureTimes, isLoading: mutationLoader }] =
     useLazyGetDepartureTimesQuery();
 
   const handleSubmit = () => {
@@ -33,7 +30,7 @@ export default function HomeView() {
   };
 
   return (
-    <ScrollView className="flex-1 p-4" bounces={false}>
+    <ScrollView className="flex-1 p-4" bounces={false} nestedScrollEnabled>
       <View className="flex-col space-y-6">
         <View className="flex-col space-y-2">
           <SelectStationList
@@ -70,14 +67,7 @@ export default function HomeView() {
         </TouchableOpacity>
       </View>
 
-      {departureTimes && (
-        <View>
-          <View className="w-full h-0.5 bg-zinc-200 my-6"></View>
-          <DepartureTimesList data={departureTimes} />
-        </View>
-      )}
-
-      <AppLoader active={initialLoading || mutationLoader} />
+      {departureTimes && <DepartureTimesList data={departureTimes} />}
 
       <StatusBar style="light" />
     </ScrollView>
