@@ -4,6 +4,7 @@ import { useStationRoutes } from "@/store/features/stationRoutes";
 import Map, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import colors from "tailwindcss/colors";
 import { useFocusEffect, useNavigation } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const MAX_ZOOM = 13;
 const MIN_ZOOM = 10;
@@ -12,7 +13,8 @@ export default function MapView() {
   const { stations } = useStationRoutes();
   const navigation = useNavigation();
 
-  const getLatLongDelta = (zoom: number, latitude: number): number[] => {
+  // find location delta values
+  /* const getLatLongDelta = (zoom: number, latitude: number): number[] => {
     const LONGITUDE_DELTA = Math.exp(Math.log(360) - zoom * Math.LN2);
     const ONE_LATITUDE_DEGREE_IN_METERS = 111.32 * 1000;
     const accurateRegion =
@@ -21,7 +23,7 @@ export default function MapView() {
     const LATITUDE_DELTA = accurateRegion / ONE_LATITUDE_DEGREE_IN_METERS;
 
     return [LONGITUDE_DELTA, LATITUDE_DELTA];
-  };
+  }; */
 
   const mapRef = useRef<Map | null>(null);
 
@@ -90,6 +92,8 @@ export default function MapView() {
           />
         ))}
       </Map>
+
+      <StatusBar style="inverted" animated translucent />
     </View>
   );
 }

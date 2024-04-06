@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   useGetStationsQuery,
@@ -9,6 +10,9 @@ import { Station } from "@/utils/types";
 import DepartureTimesList from "@/components/DepartureTimesList";
 import { store } from "@/store";
 import { setStationRoutes } from "@/store/features/stationRoutes";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "tailwindcss/colors";
+import AppLoader from "@/components/AppLoader";
 
 export default function HomeView() {
   const [selecteds, setSelecteds] = useState<Record<string, Station | null>>({
@@ -87,6 +91,9 @@ export default function HomeView() {
       </View>
 
       {departureTimes && <DepartureTimesList data={departureTimes} />}
+
+      <AppLoader active={initialLoading || mutationLoader} />
+      <StatusBar style="inverted" animated translucent />
     </View>
   );
 }
