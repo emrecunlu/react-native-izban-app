@@ -5,9 +5,23 @@ import Map, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import colors from "tailwindcss/colors";
 import { useFocusEffect, useNavigation } from "expo-router";
 
+const MAX_ZOOM = 13;
+const MIN_ZOOM = 10;
+
 export default function MapView() {
   const { stations } = useStationRoutes();
   const navigation = useNavigation();
+
+  const getLatLongDelta = (zoom: number, latitude: number): number[] => {
+    const LONGITUDE_DELTA = Math.exp(Math.log(360) - zoom * Math.LN2);
+    const ONE_LATITUDE_DEGREE_IN_METERS = 111.32 * 1000;
+    const accurateRegion =
+      LONGITUDE_DELTA *
+      (ONE_LATITUDE_DEGREE_IN_METERS * Math.cos(latitude * (Math.PI / 180)));
+    const LATITUDE_DELTA = accurateRegion / ONE_LATITUDE_DEGREE_IN_METERS;
+
+    return [LONGITUDE_DELTA, LATITUDE_DELTA];
+  };
 
   const mapRef = useRef<Map | null>(null);
 
@@ -19,7 +33,7 @@ export default function MapView() {
             latitude: parseFloat(stations[0].Enlem),
             longitude: parseFloat(stations[0].Boylam),
           },
-          zoom: 12,
+          zoom: MAX_ZOOM,
         });
       }
     }, [stations])
@@ -28,12 +42,12 @@ export default function MapView() {
   if (!stations)
     return (
       <View className="flex-1 items-center justify-center flex-col space-y-6">
-        <Text className="font-medium text-xl text-zinc-600">
+        <Text className="font-medium text-lg text-zinc-600">
           İstasyon Bilgisi Bulunamadı!
         </Text>
 
         <TouchableOpacity
-          className="bg-green-500 px-8 py-3 rounded-full"
+          className="bg-green-500 px-8 py-2.5 rounded-full"
           onPress={() => navigation.goBack()}
         >
           <Text className="text-white font-semibold">İstasyon Seç</Text>
@@ -46,10 +60,11 @@ export default function MapView() {
       <Map
         provider={PROVIDER_GOOGLE}
         ref={mapRef}
-        zoomEnabled={false}
+        zoomEnabled={true}
+        maxZoomLevel={MAX_ZOOM}
+        minZoomLevel={MIN_ZOOM}
         style={{
-          alignSelf: "stretch",
-          height: "100%",
+          flex: 1,
         }}
       >
         <Polyline
